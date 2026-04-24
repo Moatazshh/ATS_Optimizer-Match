@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATS Optimizer | AI-Powered Resume Excellence</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.5);
+            --secondary: #a855f7;
+            --bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+            --gradient: linear-gradient(135deg, #6366f1, #a855f7);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.15) 0px, transparent 50%);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        header {
+            width: 100%;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            letter-spacing: -1px;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            padding: 0 2rem 4rem 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 850px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text);
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.75rem;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        textarea {
+            width: 100%;
+            height: 350px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.25rem;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 1rem;
+            resize: none;
+            outline: none;
+            transition: border-color 0.3s ease;
+            line-height: 1.6;
+        }
+
+        textarea:focus {
+            border-color: var(--primary);
+        }
+
+        .drop-zone {
+            height: 250px;
+            border: 2px dashed var(--border);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(15, 23, 42, 0.4);
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .drop-zone:hover,
+        .drop-zone.active {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .drop-zone i {
+            margin-bottom: 1.25rem;
+            color: var(--primary);
+        }
+
+        .file-info {
+            margin-top: 1.5rem;
+            padding: 0.75rem 1.25rem;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 100px;
+            font-size: 0.95rem;
+            color: #818cf8;
+            display: none;
+            align-items: center;
+            gap: 0.75rem;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+
+        .btn-optimize {
+            width: 100%;
+            padding: 1.25rem;
+            background: var(--gradient);
+            border: none;
+            border-radius: 18px;
+            color: white;
+            font-size: 1.15rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-optimize:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(99, 102, 241, 0.5);
+        }
+
+        .btn-optimize:active {
+            transform: translateY(0);
+        }
+
+        .btn-optimize:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status-container {
+            display: none;
+            margin-top: 2rem;
+            padding: 2.5rem;
+            border-radius: 24px;
+            background: rgba(99, 102, 241, 0.05);
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .loader {
+            width: 54px;
+            height: 54px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            display: inline-block;
+            animation: rotation 1s linear infinite;
+            margin-bottom: 1.5rem;
+        }
+
+        @keyframes rotation {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .results {
+            display: none;
+            margin-top: 2rem;
+            animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            background: #1a1a1a;
+            border: 1px solid var(--border);
+            color: #ffffff;
+            padding: 0.9rem;
+            border-radius: 12px;
+            margin-top: 0.5rem;
+            outline: none;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        select:focus {
+            border-color: var(--primary);
+        }
+
+        .comparison-grid {
+            display: flex;
+            gap: 2rem;
+            margin: 2.5rem 0;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .score-circle {
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            min-width: 160px;
+        }
+
+        .score-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.75rem;
+        }
+
+        .score-val {
+            font-size: 3.5rem;
+            font-weight: 800;
+        }
+
+        .arrow {
+            font-size: 2.5rem;
+            color: var(--text-muted);
+            opacity: 0.3;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>ATS Optimizer</h1>
+        <p class="subtitle">Elevate your application with AI agents that bypass modern recruiters' filters.</p>
+    </header>
+
+    <div class="container">
+        <!-- Left: Upload & Options -->
+        <div style="display: flex; flex-direction: column; gap: 2rem;">
+            <div class="card">
+                <h2><i data-lucide="upload-cloud"></i> Resume</h2>
+                <div class="drop-zone" id="dropZone">
+                    <i data-lucide="file-plus" size="48"></i>
+                    <p>Drag your resume here or click to browse</p>
+                    <span style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">Supports PDF &
+                        DOCX</span>
+                    <input type="file" id="fileInput" hidden accept=".pdf,.docx">
+                    <div id="fileInfo" class="file-info">
+                        <i data-lucide="check-circle" size="18"></i>
+                        <span id="fileName"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><i data-lucide="settings"></i> Optimization Options</h2>
+
+                <div class="input-group">
+                    <label>Target Company Name</label>
+                    <input type="text" id="targetCompany" placeholder="e.g., Google, Amazon, etc.">
+                </div>
+
+                <div class="input-group">
+                    <label>Target ATS System</label>
+                    <select id="atsSystem">
+                        <option value="all">Unknown - Optimize for All</option>
+                        <option value="taleo">Oracle Taleo</option>
+                        <option value="workday">Workday</option>
+                        <option value="greenhouse">Greenhouse</option>
+                        <option value="icims">iCIMS</option>
+                        <option value="lever">Lever</option>
+                    </select>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
+                    <label
+                        style="display: flex; align-items: center; gap: 1rem; cursor: pointer; background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 12px;">
+                        <input type="checkbox" id="genCoverLetter"
+                            style="width: 1.2rem; height: 1.2rem; accent-color: var(--primary);">
+                        <div>
+                            <span style="font-weight: 600; display: block;">Matching Cover Letter</span>
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">Bundle an ATS-safe letter with
+                                your resume.</span>
+                        </div>
+                    </label>
+
+                    <label
+                        style="display: flex; align-items: center; gap: 1rem; cursor: pointer; background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 12px;">
+                        <input type="checkbox" id="forceQuantify"
+                            style="width: 1.2rem; height: 1.2rem; accent-color: var(--primary);">
+                        <div>
+                            <span style="font-weight: 600; display: block;">Force Quantified Achievements</span>
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">Ensure every bullet has metrics
+                                (%, $, #).</span>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="input-group" style="margin-top: 1.5rem;">
+                    <label>Output Format</label>
+                    <div style="display: flex; gap: 1rem;">
+                        <label
+                            style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 10px; cursor: pointer;">
+                            <input type="radio" name="format" value="docx" checked
+                                style="accent-color: var(--primary);"> DOCX
+                        </label>
+                        <label
+                            style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 10px; cursor: pointer;">
+                            <input type="radio" name="format" value="pdf" style="accent-color: var(--primary);"> PDF
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Job Description -->
+        <div style="display: flex; flex-direction: column; gap: 2rem;">
+            <div class="card">
+                <h2><i data-lucide="target"></i> Job Description</h2>
+                <div class="input-group">
+                    <label>Paste the requirements here</label>
+                    <textarea id="jdInput" placeholder="Paste the full job description text..."></textarea>
+                </div>
+
+                <button id="optimizeBtn" class="btn-optimize">
+                    <i data-lucide="sparkles"></i>
+                    Optimize Everything
+                </button>
+            </div>
+
+            <!-- Status -->
+            <div id="status" class="status-container">
+                <span class="loader"></span>
+                <p id="statusText" style="font-weight: 600;">Analyzing your potential...</p>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">This takes about 30-45
+                    seconds for perfection.</p>
+            </div>
+
+            <!-- Results -->
+            <div id="results" class="results card" style="border: 1px solid var(--primary-glow);">
+                <h2 style="color: var(--primary);"><i data-lucide="award"></i> Analysis Results</h2>
+
+                <div class="comparison-grid">
+                    <div class="score-circle">
+                        <div class="score-label">Initial Match</div>
+                        <div id="initialScore" class="score-val" style="color: #ef4444;">0%</div>
+                    </div>
+
+                    <div class="arrow"><i data-lucide="chevrons-right"></i></div>
+
+                    <div class="score-circle" style="background: rgba(99, 102, 241, 0.1);">
+                        <div class="score-label">Optimized</div>
+                        <div id="atsScore" class="score-val"
+                            style="background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                            0%</div>
+                    </div>
+                </div>
+
+                <div id="feedbackContainer" style="display: none; margin-bottom: 2rem;">
+                    <h4 style="color: var(--primary); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i data-lucide="info"></i> Optimization Insights
+                    </h4>
+                    <div id="feedbackText" style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 12px; border: 1px solid var(--border);">
+                    </div>
+                </div>
+
+                <div
+                    style="background: rgba(34, 197, 94, 0.1); padding: 1.5rem; border-radius: 16px; margin-bottom: 2rem; border: 1px solid rgba(34, 197, 94, 0.2);">
+
+                    <h4 style="color: #4ade80; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i data-lucide="check-circle-2"></i> Quality Check Passed
+                    </h4>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Your resume has been semantically
+                        reconstructed and keyword-dense matched for the target role.</p>
+                </div>
+
+                <button id="downloadBtn" class="btn-optimize">
+                    <i data-lucide="download"></i>
+                    Download Application Package
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer style="margin-top: 4rem; padding: 2rem; width: 100%; border-top: 1px solid var(--border); text-align: center;">
+        <p style="color: var(--text-muted); font-size: 0.9rem;">
+            &copy; 2026 ATS Optimizer. AI-powered recruitment excellence. 
+            <a href="/policy#privacy" style="color: var(--primary); text-decoration: none; margin-left: 1rem; font-weight: 500;">Privacy Policy</a>
+            <span style="color: var(--border); margin: 0 0.5rem;">|</span>
+            <a href="/policy#terms" style="color: var(--primary); text-decoration: none; font-weight: 500;">Terms of Service</a>
+        </p>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const fileInfo = document.getElementById('fileInfo');
+        const fileName = document.getElementById('fileName');
+        const jdInput = document.getElementById('jdInput');
+        const optimizeBtn = document.getElementById('optimizeBtn');
+        const status = document.getElementById('status');
+        const statusText = document.getElementById('statusText');
+        const results = document.getElementById('results');
+        const atsScore = document.getElementById('atsScore');
+        const initialScore = document.getElementById('initialScore');
+        const feedbackContainer = document.getElementById('feedbackContainer');
+        const feedbackText = document.getElementById('feedbackText');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+
+        let selectedFile = null;
+        let optimizedBlob = null;
+        let finalExt = "docx";
+
+        dropZone.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) handleFileSelect(e.target.files[0]);
+        });
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('active'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('active'));
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('active');
+            if (e.dataTransfer.files.length > 0) handleFileSelect(e.dataTransfer.files[0]);
+        });
+
+        function handleFileSelect(file) {
+            selectedFile = file;
+            fileName.textContent = file.name;
+            fileInfo.style.display = 'flex';
+        }
+
+        optimizeBtn.addEventListener('click', async () => {
+            if (!selectedFile || !jdInput.value.trim()) {
+                alert("Please upload a resume and paste the job description first!");
+                return;
+            }
+
+            const outputFormat = document.querySelector('input[name="format"]:checked').value;
+            const atsSystem = document.getElementById('atsSystem').value;
+            const targetCompany = document.getElementById('targetCompany').value.trim();
+
+            const forceQuantify = document.getElementById('forceQuantify').checked;
+            const genCoverLetter = document.getElementById('genCoverLetter').checked;
+            finalExt = outputFormat;
+
+            optimizeBtn.disabled = true;
+            status.style.display = 'block';
+            results.style.display = 'none';
+
+            const formData = new FormData();
+            formData.append('resume_file', selectedFile);
+            formData.append('jd_text', jdInput.value.trim());
+
+            formData.append('output_format', outputFormat);
+            formData.append('ats_system', atsSystem);
+            formData.append('target_company', targetCompany);
+            formData.append('force_quantify', forceQuantify);
+            formData.append('gen_cover_letter', genCoverLetter);
+
+            const statusUpdates = [
+                "Extracting key skills from Job Description...",
+                "Scanning original resume for current match...",
+                "Running Phase 1: Semantic Reconstruction...",
+                "Running Phase 2: Keyword Density Polish...",
+                "Quantifying achievements with STAR method...",
+                "Finalizing ATS-safe formatting..."
+            ];
+
+            let updateIdx = 0;
+            const updateInterval = setInterval(() => {
+                if (updateIdx < statusUpdates.length) statusText.textContent = statusUpdates[updateIdx++];
+            }, 5000);
+
+            try {
+                const response = await fetch('/api/v1/optimize', { method: 'POST', body: formData });
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || "Optimization failed");
+                }
+
+                clearInterval(updateInterval);
+
+                const score = response.headers.get('X-ATS-Score');
+                const initial = response.headers.get('X-Initial-Score');
+                const feedback = response.headers.get('X-ATS-Feedback');
+
+                atsScore.textContent = Math.round(score) + "%";
+                initialScore.textContent = Math.round(initial || 0) + "%";
+
+                if (feedback && feedback.trim()) {
+                    feedbackText.textContent = feedback;
+                    feedbackContainer.style.display = 'block';
+                } else {
+                    feedbackContainer.style.display = 'none';
+                }
+
+
+                optimizedBlob = await response.blob();
+                status.style.display = 'none';
+                results.style.display = 'block';
+                optimizeBtn.disabled = false;
+
+            } catch (err) {
+                clearInterval(updateInterval);
+                alert("Error: " + err.message);
+                status.style.display = 'none';
+                optimizeBtn.disabled = false;
+            }
+        });
+
+        downloadBtn.addEventListener('click', () => {
+            if (optimizedBlob) {
+                const url = window.URL.createObjectURL(optimizedBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                if (document.getElementById('genCoverLetter').checked) {
+                    a.download = `ATS_Application_Package.zip`;
+                } else {
+                    a.download = `Optimized_Resume_ATS_${atsScore.textContent}.${finalExt}`;
+                }
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+            }
+        });
+    </script>
+</body>
+
+</html>

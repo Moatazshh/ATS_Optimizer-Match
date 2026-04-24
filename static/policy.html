@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy & Terms | ATS Optimizer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.5);
+            --secondary: #a855f7;
+            --bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+            --gradient: linear-gradient(135deg, #6366f1, #a855f7);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.15) 0px, transparent 50%);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        header {
+            width: 100%;
+            padding: 4rem 2rem 2rem 2rem;
+            text-align: center;
+        }
+
+        .back-link {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s ease;
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            color: var(--primary);
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            padding: 0 2rem 6rem 2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        h2:first-child {
+            margin-top: 0;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.5rem 0;
+            color: var(--text);
+        }
+
+        p {
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        ul {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+            color: var(--text-muted);
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        .last-updated {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            opacity: 0.7;
+            margin-top: 3rem;
+            text-align: center;
+        }
+
+        footer {
+            width: 100%;
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            margin-top: auto;
+        }
+
+        .footer-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="/" class="back-link">
+        <i data-lucide="arrow-left" size="20"></i>
+        Back to Optimizer
+    </a>
+
+    <header>
+        <h1>Legal Center</h1>
+        <p style="color: var(--text-muted);">Transparency and trust are at the core of our AI-driven service.</p>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2 id="privacy"><i data-lucide="shield-check"></i> Privacy Policy</h2>
+            <p>At ATS Optimizer, we value your privacy and the confidentiality of your professional data. This policy outlines how we handle your information.</p>
+
+            <h3>1. Information Collection</h3>
+            <p>We process the following data when you use our service:</p>
+            <ul>
+                <li><strong>Resume Files:</strong> To perform analysis and optimization.</li>
+                <li><strong>Job Descriptions:</strong> To match your profile against specific requirements.</li>
+                <li><strong>Contact Info:</strong> Names and email addresses found in resumes are used solely for the generation of the optimized document.</li>
+            </ul>
+
+            <h3>2. Data Processing & AI</h3>
+            <p>Your data is processed using Large Language Models (LLMs) to provide semantic reconstruction and keyword optimization. We do not use your personal data to train these models.</p>
+
+            <h3>3. Data Retention</h3>
+            <p>We believe in "Privacy by Design". Files uploaded to our server are processed in-memory and are not permanently stored on our disks unless explicitly required for the session. Temporary files are purged regularly.</p>
+
+            <h3>4. Third-Party Services</h3>
+            <p>We may use secure API providers (such as OpenAI or Anthropic) to power our AI features. These providers are bound by strict confidentiality agreements and do not use your data for their own purposes.</p>
+
+            <h2 id="terms"><i data-lucide="file-text"></i> Terms of Service</h2>
+            <p>By using ATS Optimizer, you agree to the following terms:</p>
+
+            <h3>1. Acceptable Use</h3>
+            <p>You agree to use this service for personal, non-commercial purposes related to your job search. You shall not use this service to generate fraudulent documents or bypass legal recruitment processes.</p>
+
+            <h3>2. No Guarantee of Results</h3>
+            <p>While our AI is designed to maximize your chances with ATS systems, we cannot guarantee job interviews or offers. The final quality and accuracy of the resume depend on the input provided and the specific criteria of employers.</p>
+
+            <h3>3. Intellectual Property</h3>
+            <p>You retain all rights to the content you upload. We retain all rights to the underlying AI agents, algorithms, and design of the ATS Optimizer platform.</p>
+
+            <h3>4. Limitation of Liability</h3>
+            <p>ATS Optimizer is provided "as is". We are not liable for any direct or indirect damages arising from your use of the service, including but not limited to employment decisions.</p>
+
+            <div class="last-updated">
+                Last Updated: April 24, 2026
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p class="footer-text">© 2026 ATS Optimizer. All rights reserved.</p>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>
