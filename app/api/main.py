@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 
 from app.services.parser import extract_text_from_file
 from app.utils.text_cleaner import clean_text
-from app.services.llm_optimizer import (
+from app.services.optimizer_v2 import (
 
     extract_jd_keywords, 
     optimize_resume, 

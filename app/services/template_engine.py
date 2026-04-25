@@ -2,6 +2,7 @@ from docx import Document
 from docx.shared import Pt, Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from fpdf import FPDF
+from fpdf.enums import XPos, YPos
 from app.models.schemas import StructuredResume, CoverLetter
 import io
 
@@ -38,7 +39,7 @@ class ATSDocxGenerator:
 
         # Metadata (helps ATS classify the file)
         self.doc.core_properties.title    = f"{self.resume.contact_info.name} Resume"
-        self.doc.core_properties.author   = "ATS Optimizer"
+        self.doc.core_properties.author   = self.resume.contact_info.name
         self.doc.core_properties.language = "en-US"
 
     # ── Low-level paragraph helpers ───────────────────────────────────────────
@@ -74,7 +75,7 @@ class ATSDocxGenerator:
         hr = self.doc.add_paragraph(style="Normal")
         hr.paragraph_format.space_before = Pt(0)
         hr.paragraph_format.space_after  = Pt(6)
-        hr.add_run("─" * 80)  # Em-dash line — purely decorative text
+        hr.add_run("_" * 80)  # Standard underscore line — 100% safe
 
     def _bullet(self, text: str) -> None:
         """Add a bullet point as a plain Normal paragraph (no List style)."""
@@ -133,12 +134,12 @@ class ATSDocxGenerator:
         p_contact = self.doc.add_paragraph(style="Normal")
         p_contact.alignment = WD_ALIGN_PARAGRAPH.CENTER
         p_contact.paragraph_format.space_after = Pt(6)
-        p_contact.add_run(" | ".join(parts))
+        p_contact.add_run(" • ".join(parts))
 
     def _add_summary(self):
         if not self.resume.summary:
             return
-        self._section_header("Summary")
+        self._section_header("SUMMARY")
         p = self.doc.add_paragraph(style="Normal")
         p.paragraph_format.space_after = Pt(4)
         p.add_run(self.resume.summary)
@@ -146,7 +147,7 @@ class ATSDocxGenerator:
     def _add_skills(self):
         if not self.resume.skills:
             return
-        self._section_header("Skills")
+        self._section_header("SKILLS")
         # Comma-separated — every ATS recognises this format
         p = self.doc.add_paragraph(style="Normal")
         p.paragraph_format.space_after = Pt(4)
@@ -155,7 +156,7 @@ class ATSDocxGenerator:
     def _add_experience(self):
         if not self.resume.experience:
             return
-        self._section_header("Work Experience")
+        self._section_header("WORK EXPERIENCE")
         for exp in self.resume.experience:
             # Title | Company
             p_title = self.doc.add_paragraph(style="Normal")
@@ -163,16 +164,16 @@ class ATSDocxGenerator:
             p_title.paragraph_format.space_after  = Pt(0)
             r_title = p_title.add_run(f"{exp.title}")
             r_title.bold = True
-            p_title.add_run(f"  |  {exp.company}")
+            p_title.add_run(f" | {exp.company}")
 
             # Dates | Location
             p_date = self.doc.add_paragraph(style="Normal")
             p_date.paragraph_format.space_before = Pt(0)
             p_date.paragraph_format.space_after  = Pt(2)
-            date_str = f"{exp.start_date} – {exp.end_date}"
+            date_str = f"{exp.start_date} - {exp.end_date}"
             if exp.location:
-                date_str += f"  |  {exp.location}"
-            p_date.add_run(date_str).italic = True
+                date_str += f" | {exp.location}"
+            p_date.add_run(date_str)
 
             # Bullets
             for bp in exp.bullet_points:
@@ -181,7 +182,7 @@ class ATSDocxGenerator:
     def _add_education(self):
         if not self.resume.education:
             return
-        self._section_header("Education")
+        self._section_header("EDUCATION")
         for edu in self.resume.education:
             p = self.doc.add_paragraph(style="Normal")
             p.paragraph_format.space_before = Pt(4)
@@ -192,13 +193,13 @@ class ATSDocxGenerator:
             p2 = self.doc.add_paragraph(style="Normal")
             p2.paragraph_format.space_before = Pt(0)
             p2.paragraph_format.space_after  = Pt(4)
-            loc = f"  |  {edu.location}" if edu.location else ""
-            p2.add_run(f"{edu.graduation_date}{loc}").italic = True
+            loc = f" | {edu.location}" if edu.location else ""
+            p2.add_run(f"{edu.graduation_date}{loc}")
 
     def _add_certifications(self):
         if not self.resume.certifications:
             return
-        self._section_header("Certifications")
+        self._section_header("CERTIFICATIONS")
         for cert in self.resume.certifications:
             self._bullet(cert)
 
@@ -217,9 +218,9 @@ class ATSPDFGenerator(FPDF):
         self.r_margin = 15
         self.set_left_margin(15)
         self.set_right_margin(15)
-        self.set_font("Arial", size=10)
+        self.set_font("helvetica", size=10)
         self.set_title(f"{self.resume.contact_info.name} Resume")
-        self.set_author("ATS Optimizer")
+        self.set_author(self.resume.contact_info.name)
         self.set_subject("Professional Resume optimized for ATS systems")
 
     def _clean_text(self, text: str) -> str:
@@ -238,17 +239,17 @@ class ATSPDFGenerator(FPDF):
     def _add_section_header(self, text: str):
         self.ln(5)
         self.set_x(self.l_margin)
-        self.set_font("Arial", "B", 12)
-        self.cell(0, 8, text.upper(), ln=1, align="L")
+        self.set_font("helvetica", "B", 12)
+        self.cell(0, 8, text.upper(), new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="L")
         self.line(self.l_margin, self.get_y(), self.w - self.r_margin, self.get_y())
         self.ln(2)
-        self.set_font("Arial", size=10)
+        self.set_font("helvetica", size=10)
 
     def generate(self) -> io.BytesIO:
         self.set_y(15)
-        self.set_font("Arial", "B", 16)
-        self.cell(0, 10, self._clean_text(self.resume.contact_info.name), ln=1, align="C")
-        self.set_font("Arial", size=10)
+        self.set_font("helvetica", "B", 16)
+        self.cell(0, 10, self._clean_text(self.resume.contact_info.name), new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="C")
+        self.set_font("helvetica", size=10)
 
         parts = []
         if self.resume.contact_info.email:    parts.append(self.resume.contact_info.email)
@@ -256,7 +257,7 @@ class ATSPDFGenerator(FPDF):
         if self.resume.contact_info.location: parts.append(self.resume.contact_info.location)
         if self.resume.contact_info.linkedin: parts.append(self.resume.contact_info.linkedin)
         if self.resume.contact_info.website:  parts.append(self.resume.contact_info.website)
-        self.cell(0, 5, self._clean_text(" | ".join(parts)), ln=1, align="C")
+        self.cell(0, 5, self._clean_text(" | ".join(parts)), new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="C")
 
         self._add_summary()
         if self.template_type == "tech":
@@ -288,15 +289,15 @@ class ATSPDFGenerator(FPDF):
         self._add_section_header("Work Experience")
         for exp in self.resume.experience:
             self.set_x(self.l_margin)
-            self.set_font("Arial", "B", 10)
-            self.cell(0, 5, self._clean_text(f"{exp.title} | {exp.company}"), ln=1)
+            self.set_font("helvetica", "B", 10)
+            self.cell(0, 5, self._clean_text(f"{exp.title} | {exp.company}"), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
 
             self.set_x(self.l_margin)
-            self.set_font("Arial", "I", 9)
+            self.set_font("helvetica", "", 9)
             loc_str = f" | {exp.location}" if exp.location else ""
-            self.cell(0, 5, self._clean_text(f"{exp.start_date} - {exp.end_date}{loc_str}"), ln=1)
+            self.cell(0, 5, self._clean_text(f"{exp.start_date} - {exp.end_date}{loc_str}"), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
 
-            self.set_font("Arial", size=10)
+            self.set_font("helvetica", size=10)
             for bp in exp.bullet_points:
                 self.set_x(self.l_margin + 5)
                 avail = self.w - self.l_margin - self.r_margin - 5
@@ -307,19 +308,19 @@ class ATSPDFGenerator(FPDF):
         if not self.resume.education: return
         self._add_section_header("Education")
         for edu in self.resume.education:
-            self.set_font("Arial", "B", 10)
-            self.cell(0, 5, self._clean_text(f"{edu.degree}, {edu.institution}"), ln=True)
-            self.set_font("Arial", size=9)
+            self.set_font("helvetica", "B", 10)
+            self.cell(0, 5, self._clean_text(f"{edu.degree}, {edu.institution}"), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+            self.set_font("helvetica", size=9)
             loc_str = f" | {edu.location}" if edu.location else ""
-            self.cell(0, 5, self._clean_text(f"{edu.graduation_date}{loc_str}"), ln=True)
+            self.cell(0, 5, self._clean_text(f"{edu.graduation_date}{loc_str}"), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
 
     def _add_certifications(self):
         if not self.resume.certifications: return
         self._add_section_header("Certifications")
-        self.set_font("Arial", size=10)
+        self.set_font("helvetica", size=10)
         for cert in self.resume.certifications:
             self.set_x(self.l_margin + 5)
-            self.cell(0, 5, self._clean_text(f"* {cert}"), ln=True)
+            self.cell(0, 5, self._clean_text(f"* {cert}"), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -365,14 +366,14 @@ def generate_cover_letter_docx(cl: CoverLetter, user_name: str = "Candidate Name
 def generate_cover_letter_pdf(cl: CoverLetter, user_name: str = "Candidate Name") -> io.BytesIO:
     pdf = FPDF()
     pdf.add_page()
-    pdf.set_font("Arial", size=11)
+    pdf.set_font("helvetica", size=11)
 
-    pdf.cell(0, 10, cl.date, ln=True)
+    pdf.cell(0, 10, cl.date, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
     pdf.ln(5)
-    pdf.cell(0, 5, cl.recipient_name, ln=True)
-    pdf.cell(0, 5, cl.company_name, ln=True)
+    pdf.cell(0, 5, cl.recipient_name, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.cell(0, 5, cl.company_name, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
     pdf.ln(10)
-    pdf.cell(0, 10, f"{cl.salutation} {cl.recipient_name},", ln=True)
+    pdf.cell(0, 10, f"{cl.salutation} {cl.recipient_name},", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
     pdf.ln(5)
 
     for para in cl.content.split("\n\n"):
@@ -385,9 +386,9 @@ def generate_cover_letter_pdf(cl: CoverLetter, user_name: str = "Candidate Name"
         pdf.ln(5)
 
     pdf.ln(5)
-    pdf.cell(0, 5, cl.closing + ",", ln=True)
+    pdf.cell(0, 5, cl.closing + ",", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
     pdf.ln(5)
-    pdf.cell(0, 5, user_name, ln=True)
+    pdf.cell(0, 5, user_name, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
 
     buf = io.BytesIO()
     pdf.output(buf)
