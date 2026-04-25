@@ -1,6 +1,7 @@
 import uvicorn
 import os
 from dotenv import load_dotenv
+from app.api.main import app
 
 if __name__ == "__main__":
     load_dotenv()
@@ -8,4 +9,4 @@ if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))
     
     print(f"Starting ATS Optimizer API on http://{host}:{port}")
-    uvicorn.run("app.api.main:app", host=host, port=port, reload=True)
+    uvicorn.run(app, host=host, port=port, reload=False)
