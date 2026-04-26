@@ -423,19 +423,16 @@
             <div id="results" class="results card" style="border: 1px solid var(--primary-glow);">
                 <h2 style="color: var(--primary);"><i data-lucide="award"></i> Analysis Results</h2>
 
-                <div class="comparison-grid">
-                    <div class="score-circle">
+                <div class="comparison-grid" style="flex-direction: column; align-items: stretch; gap: 1rem;">
+                    <div class="score-summary" style="background: rgba(255, 255, 255, 0.03); padding: 1.5rem; border-radius: 20px;">
                         <div class="score-label">Initial Match</div>
-                        <div id="initialScore" class="score-val" style="color: #ef4444;">0%</div>
+                        <div id="initialScore" class="score-val" style="color: #ef4444;">Ready</div>
                     </div>
-
-                    <div class="arrow"><i data-lucide="chevrons-right"></i></div>
-
-                    <div class="score-circle" style="background: rgba(99, 102, 241, 0.1);">
+                    <div class="score-summary" style="background: rgba(99, 102, 241, 0.1); padding: 1.5rem; border-radius: 20px;">
                         <div class="score-label">Optimized</div>
                         <div id="atsScore" class="score-val"
                             style="background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-                            0%</div>
+                            Ready</div>
                     </div>
                 </div>
 
@@ -566,12 +563,7 @@
 
                 clearInterval(updateInterval);
 
-                const score = response.headers.get('X-ATS-Score');
-                const initial = response.headers.get('X-Initial-Score');
                 const feedback = response.headers.get('X-ATS-Feedback');
-
-                atsScore.textContent = Math.round(score) + "%";
-                initialScore.textContent = Math.round(initial || 0) + "%";
 
                 if (feedback && feedback.trim()) {
                     feedbackText.textContent = feedback;
@@ -602,7 +594,7 @@
                 if (document.getElementById('genCoverLetter').checked) {
                     a.download = `ATS_Application_Package.zip`;
                 } else {
-                    a.download = `Optimized_Resume_ATS_${atsScore.textContent}.${finalExt}`;
+                    a.download = `Optimized_Resume_ATS.${finalExt}`;
                 }
                 document.body.appendChild(a);
                 a.click();
