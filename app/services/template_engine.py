@@ -123,18 +123,26 @@ class ATSDocxGenerator:
         run_name.bold = True
         run_name.font.size = Pt(16)
 
-        # Contact line — all on one paragraph, centred
-        parts = []
-        if c.email:    parts.append(c.email)
-        if c.phone:    parts.append(c.phone)
-        if c.location: parts.append(c.location)
-        if c.linkedin: parts.append(c.linkedin)
-        if c.website:  parts.append(c.website)
+        # Contact details split into two centred lines to avoid wrapping misalignment
+        primary = []
+        secondary = []
+        if c.email:    primary.append(c.email)
+        if c.phone:    primary.append(c.phone)
+        if c.location: secondary.append(c.location)
+        if c.linkedin: secondary.append(c.linkedin)
+        if c.website:  secondary.append(c.website)
 
-        p_contact = self.doc.add_paragraph(style="Normal")
-        p_contact.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        p_contact.paragraph_format.space_after = Pt(6)
-        p_contact.add_run(" • ".join(parts))
+        if primary:
+            p_primary = self.doc.add_paragraph(style="Normal")
+            p_primary.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            p_primary.paragraph_format.space_after = Pt(0)
+            p_primary.add_run(" • ".join(primary))
+
+        if secondary:
+            p_secondary = self.doc.add_paragraph(style="Normal")
+            p_secondary.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            p_secondary.paragraph_format.space_after = Pt(6)
+            p_secondary.add_run(" • ".join(secondary))
 
     def _add_summary(self):
         if not self.resume.summary:
@@ -251,13 +259,18 @@ class ATSPDFGenerator(FPDF):
         self.cell(0, 10, self._clean_text(self.resume.contact_info.name), new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="C")
         self.set_font("helvetica", size=10)
 
-        parts = []
-        if self.resume.contact_info.email:    parts.append(self.resume.contact_info.email)
-        if self.resume.contact_info.phone:    parts.append(self.resume.contact_info.phone)
-        if self.resume.contact_info.location: parts.append(self.resume.contact_info.location)
-        if self.resume.contact_info.linkedin: parts.append(self.resume.contact_info.linkedin)
-        if self.resume.contact_info.website:  parts.append(self.resume.contact_info.website)
-        self.cell(0, 5, self._clean_text(" | ".join(parts)), new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="C")
+        primary = []
+        secondary = []
+        if self.resume.contact_info.email:    primary.append(self.resume.contact_info.email)
+        if self.resume.contact_info.phone:    primary.append(self.resume.contact_info.phone)
+        if self.resume.contact_info.location: secondary.append(self.resume.contact_info.location)
+        if self.resume.contact_info.linkedin: secondary.append(self.resume.contact_info.linkedin)
+        if self.resume.contact_info.website:  secondary.append(self.resume.contact_info.website)
+
+        if primary:
+            self.cell(0, 5, self._clean_text(" | ".join(primary)), new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="C")
+        if secondary:
+            self.cell(0, 5, self._clean_text(" | ".join(secondary)), new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="C")
 
         self._add_summary()
         if self.template_type == "tech":

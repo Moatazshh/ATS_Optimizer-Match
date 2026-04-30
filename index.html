@@ -339,7 +339,7 @@
                 <h2><i data-lucide="settings"></i> Optimization Options</h2>
 
                 <div class="input-group">
-                    <label>Target Company Name</label>
+                    <label>Target Company Name <span style="font-size:0.85rem; color: var(--text-muted);">(Only for cover letter request purposes)</span></label>
                     <input type="text" id="targetCompany" placeholder="e.g., Google, Amazon, etc.">
                 </div>
 
@@ -564,6 +564,11 @@
                 clearInterval(updateInterval);
 
                 const feedback = response.headers.get('X-ATS-Feedback');
+                const finalScore = response.headers.get('X-ATS-Score');
+                const startScore = response.headers.get('X-Initial-Score');
+
+                if (finalScore) atsScore.textContent = finalScore + '%';
+                if (startScore) initialScore.textContent = startScore + '%';
 
                 if (feedback && feedback.trim()) {
                     feedbackText.textContent = feedback;

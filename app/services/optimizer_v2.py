@@ -25,13 +25,15 @@ def _extract_json(text: str) -> str:
 def extract_jd_keywords(jd_text: str) -> JDKeywords:
     client = get_groq_client()
     prompt = f"""
-    You are an expert ATS (Applicant Tracking System) parser.
-    Extract the following from the Job Description provided below:
-    - job_title: The specific job title being hired for.
-    - hard_skills: BE EXHAUSTIVE. Extract every technical skill, software, tool, programming language, methodology (Agile, Scrum, etc.), and industry-specific terminology mentioned.
-    - soft_skills: Interpersonal skills, traits (e.g. leadership, communication).
-    - action_verbs: Key verbs used to describe responsibilities (e.g. managed, developed, pioneered).
-    - certifications: Required or preferred certifications or degrees.
+    You are a Senior Technical Recruiter with 15+ years of experience in elite talent acquisition.
+    Your task is to perform a Smart Scan of the Job Description to extract the "Power Keywords" that modern recruiters and ATS algorithms prioritize.
+    
+    Extract the following from the Job Description:
+    - job_title: The specific, formal job title.
+    - hard_skills: BE EXHAUSTIVE and ELITE. Extract every technical skill, software, tool, programming language, and methodology. Use high-grade professional terminology (e.g., use "Enterprise Resource Planning" instead of "Business Software").
+    - soft_skills: Strategic interpersonal competencies. Avoid generic terms like "Good Communication". Use "Stakeholder Management", "Cross-functional Leadership", or "Conflict Resolution".
+    - action_verbs: High-impact executive verbs (e.g., spearheaded, architected, orchestrated).
+    - certifications: Formal credentials and degrees.
 
     Output strictly as valid JSON matching this schema exactly:
     {{
@@ -107,9 +109,13 @@ def optimize_resume(resume_text: str, jd_keywords: JDKeywords, feedback: str = "
        - EVERY bullet MUST include a QUANTIFIED RESULT (%, $, numbers, or scale). 
        - Avoid vague phrases; use measurable achievements (e.g., "Improved process, resulting in a 20% reduction in lead time").
     
-    2. STRATEGIC KEYWORD INTEGRATION: 
+    2. STRATEGIC KEYWORD INTEGRATION & HR-GRADE WORDING: 
        - EXACT MATCH: Use the EXACT terminology from the Job Description for Hard Skills. 
-       - DUAL-EXPOSURE: Include keywords in both 'SKILLS' and 'EXPERIENCE' sections.
+       - ELITE EXPRESSIONS: Replace generic "low-grade" expressions with professional synonyms. 
+         (e.g., instead of "Fixed bugs", use "Rectified critical software anomalies").
+         (e.g., instead of "Helpful to team", use "Cross-functional stakeholder collaboration").
+       - DUAL-EXPOSURE: Include keywords in both 'SKILLS' and 'EXPERIENCE' sections for maximum ATS relevance.
+       - NO AI BIAS: Ensure the tone is human, professional, and authoritative. Avoid repetitive "AI-sounding" patterns.
 
     3. VOCABULARY DIVERSITY & ZERO-REPETITION POLICY: 
        - ABSOLUTE LIMIT: No action verb (e.g., "Spearheaded", "Conducted", "Led", "Applied") may appear more than ONCE in the entire document.
@@ -122,8 +128,15 @@ def optimize_resume(resume_text: str, jd_keywords: JDKeywords, feedback: str = "
        - SPELLING: Use 100% American English (e.g., 'Optimized' not 'Optimised').
        - VOICE: Use ACTIVE VOICE only. No "Responsible for".
 
-    5. STANDARDIZED HEADERS: Use "SUMMARY", "WORK EXPERIENCE", "EDUCATION", "SKILLS", "CERTIFICATIONS".
-    6. DATE CONSISTENCY: Format all dates as 'MMM YYYY - MMM YYYY' (e.g., 'Jan 2020 - Present').
+    5. TITLE ALIGNMENT RULES:
+       - The generated resume MUST use the JD target job title as the relevant role title when appropriate.
+       - Do not copy the literal label "Job title:" from the Job Description into the resume.
+       - The most recent experience title should not default to the original resume's current title unless it exactly matches the target role.
+       - Use only actual role names in the 'experience.title' fields.
+
+    6. STANDARDIZED HEADERS: Use "SUMMARY", "WORK EXPERIENCE", "EDUCATION", "SKILLS", "CERTIFICATIONS".
+    7. DATE CONSISTENCY: Format all dates as 'MMM YYYY - MMM YYYY' (e.g., 'Jan 2020 - Present').
+    8. SKILLS DENSITY: Limit the 'skills' list to the TOP 25 most relevant hard and soft skills. DO NOT EXCEED 25 items.
     """
 
     if feedback:
@@ -171,23 +184,23 @@ def optimize_resume(resume_text: str, jd_keywords: JDKeywords, feedback: str = "
         exp.company = exp.company.strip()
         exp.bullet_points = [clean_text(bp) for bp in exp.bullet_points]
     
-    resume.skills = clean_keywords(resume.skills)
+    resume.skills = clean_keywords(resume.skills)[:25] # Safety truncation to 25
     resume.certifications = clean_keywords(resume.certifications)
 
     # ── Post-processing: deduplicate repeated action verbs ──────────────────
     # Build a synonym map: overused word → list of alternatives
     VERB_SYNONYMS = {
-        "applied":      ["Utilized", "Implemented", "Deployed", "Leveraged", "Exercised"],
-        "conducted":    ["Performed", "Executed", "Spearheaded", "Facilitated", "Orchestrated"],
-        "managed":      ["Oversaw", "Directed", "Steered", "Supervised", "Governed"],
-        "developed":    ["Engineered", "Architected", "Built", "Crafted", "Established"],
-        "improved":     ["Enhanced", "Optimized", "Elevated", "Accelerated", "Refined"],
-        "led":          ["Spearheaded", "Championed", "Drove", "Pioneered", "Headed"],
-        "created":      ["Designed", "Produced", "Formulated", "Instituted", "Launched"],
-        "supported":    ["Assisted", "Reinforced", "Bolstered", "Aided", "Facilitated"],
-        "ensured":      ["Validated", "Verified", "Guaranteed", "Secured", "Confirmed"],
-        "utilized":     ["Applied", "Harnessed", "Employed", "Leveraged", "Deployed"],
-        "assisted":     ["Supported", "Contributed", "Collaborated", "Enabled", "Aided"],
+        "applied":      ["Utilized", "Implemented", "Deployed", "Leveraged", "Harnessed"],
+        "conducted":    ["Spearheaded", "Executed", "Orchestrated", "Facilitated", "Chaired"],
+        "managed":      ["Oversaw", "Orchestrated", "Steered", "Supervised", "Governed"],
+        "developed":    ["Engineered", "Architected", "Pioneered", "Crafted", "Established"],
+        "improved":     ["Optimized", "Enhanced", "Refined", "Elevated", "Accelerated"],
+        "led":          ["Spearheaded", "Championed", "Pioneered", "Directed", "Headed"],
+        "created":      ["Designed", "Formulated", "Instituted", "Launched", "Engineered"],
+        "supported":    ["Bolstered", "Reinforced", "Aided", "Collaborated on", "Facilitated"],
+        "ensured":      ["Guaranteed", "Validated", "Verified", "Secured", "Confirmed"],
+        "utilized":     ["Leveraged", "Harnessed", "Employed", "Optimized", "Deployed"],
+        "assisted":     ["Contributed to", "Collaborated on", "Enabled", "Supported", "Reinforced"],
     }
 
     used_starts: dict = {}   # word_lower → count of uses as bullet starter

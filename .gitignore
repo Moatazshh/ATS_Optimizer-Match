@@ -26,3 +26,6 @@ __pycache__/
 # Logs
 logs/
 *.log
+
+.vercel
+.env*.local

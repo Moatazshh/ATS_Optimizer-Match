@@ -31,19 +31,17 @@ load_dotenv()
 
 app = FastAPI(title="ATS Optimizer API", version="1.0.0")
 
-# Mount static files for the UI
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
+# Vercel handles UI natively from /public but we keep handlers for stability
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 @app.get("/", response_class=HTMLResponse)
 async def root():
-    index_path = BASE_DIR / "static" / "index.html"
+    index_path = BASE_DIR / "index.html"
     return index_path.read_text(encoding="utf-8")
 
 @app.get("/policy", response_class=HTMLResponse)
 async def policy():
-    policy_path = BASE_DIR / "static" / "policy.html"
+    policy_path = BASE_DIR / "policy.html"
     return policy_path.read_text(encoding="utf-8")
 
 @app.post("/api/v1/optimize")
